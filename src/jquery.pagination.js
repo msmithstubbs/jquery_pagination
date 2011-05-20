@@ -10,6 +10,8 @@
  * @return {Object} jQuery Object
  */
  (function($){
+	var SHOW_ALL = -1;
+	
 	/**
 	 * @class Class for calculating pagination values
 	 */
@@ -63,7 +65,10 @@
 		 */
 		createLink:function(page_id, current_page, appendopts){
 			var lnk, np = this.pc.numPages();
-			page_id = page_id<0?0:(page_id<np?page_id:np-1); // Normalize page id to sane value
+			
+			if (page_id !== SHOW_ALL) {
+				page_id = page_id<0?0:(page_id<np?page_id:np-1); // Normalize page id to sane value
+			}
 			appendopts = $.extend({text:page_id+1, classes:""}, appendopts||{});
 			if(page_id == current_page){
 				lnk = $("<span class='current'>" + appendopts.text + "</span>");
@@ -121,6 +126,13 @@
 			if(this.opts.next_text && (current_page < np-1 || this.opts.next_show_always)){
 				fragment.append(this.createLink(current_page+1, current_page, {text:this.opts.next_text, classes:"next"}));
 			}
+			
+			// Generate "All" link
+			if(this.opts.all_text) {
+				fragment.append(this.createLink(SHOW_ALL, current_page, {text:this.opts.all_text, classes:"all"}));
+			}
+			
+			
 			$('a', fragment).click(eventHandler);
 			return fragment;
 		}
@@ -128,7 +140,6 @@
 	
 	// Extend jQuery
 	$.fn.pagination = function(maxentries, opts){
-		
 		// Initialize options with default values
 		opts = jQuery.extend({
 			items_per_page:10,
@@ -138,6 +149,7 @@
 			link_to:"#",
 			prev_text:"Prev",
 			next_text:"Next",
+			all_text: "Show All",
 			ellipse_text:"...",
 			prev_show_always:true,
 			next_show_always:true,
@@ -198,7 +210,7 @@
 		var pc = new $.PaginationCalculator(maxentries, opts);
 		var np = pc.numPages();
 		containers.bind('setPage', {numPages:np}, function(evt, page_id) { 
-				if(page_id >= 0 && page_id < evt.data.numPages) {
+				if( (page_id === SHOW_ALL) || page_id >= 0 && page_id < evt.data.numPages) {
 					selectPage(page_id); return false;
 				}
 		});

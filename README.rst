@@ -53,10 +53,15 @@ Available Options
 -----------------
 The following list describes what options you have for the option object:
 
+all_text
+ 	Text for the "Show All"-link that shows all content on one page. 
+	Leave blank to hide the link. Default: ``Show All``
+	
 callback
 	A callback function that is called when a user clicks on a pagination link. The 
 	function receives two parameters: the new page index and the pagination 
-	container (a DOM element). If the callback returns false, the event 
+	container (a DOM element). The new page index is the page number. A page number 
+	of -1 represents a 'show all pages' action. If the callback returns false, the event 
 	propagation is stopped. Default value: ``function(){return false;}``.
 	This callback function is essential for the functionality of the pagination!
 	It should contain code that updates your content.
@@ -127,6 +132,8 @@ custom events like this:::
 	$("#News-Pagination").trigger('nextPage');
 	// Go to the previous page
 	$("#News-Pagination").trigger('prevPage');
+	// Show all pages
+	$("#News-Pagination").trigger('setPage', [-1]);
 
 The event handlers check if the new page number is inside the boundaries of the number of pages and ignore the event if it is outside.
 

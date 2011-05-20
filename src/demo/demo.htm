@@ -25,7 +25,13 @@
              * @param {jQuery} jq the container with the pagination links as a jQuery object
              */
             function pageselectCallback(page_index, jq){
-                var new_content = jQuery('#hiddenresult div.result:eq('+page_index+')').clone();
+              var new_content;
+              if (page_index === -1) {
+                new_content = jQuery('#hiddenresult div.result').clone();
+              } else {
+                new_content = jQuery('#hiddenresult div.result:eq('+page_index+')').clone();
+              }
+                console.log(new_content)
                 $('#Searchresult').empty().append(new_content);
                 return false;
             }
